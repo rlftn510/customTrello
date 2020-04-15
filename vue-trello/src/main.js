@@ -1,23 +1,30 @@
 import Vue from 'vue'
 import App from './App.vue'
+import VueRouter from 'vue-router'
+
+Vue.use(VueRouter)
 
 const Login = { template : '<div>login Page </div>'}
+const NotFound = { template : '<div>NOT pound Page</div>'}
 
-const routes = {
-  '/' : App,
-  '/login' : Login
-}
+
+// const routes = [
+//   { path: '/', component: App },
+//   { path: '/login', component: Login },
+// ]
+
+const router = new VueRouter({
+  mode: 'history',
+  routes : [
+    { path: '/', component: App },
+    { path: '/login', component: Login },
+    { path: '*', component : NotFound},
+  ]
+})
 
 
 new Vue({
   el: '#app',
-  computed: {
-    vueComponent() {
-      return routes[window.location.pathname] || 
-      { template : '<div>not found page</div>'}
-    }
-  },
-  render(h) {
-    return h(this.vueComponent)
-  }
+  router,
+  render: h => h({template : '<router-view></router-view>'})
 })
