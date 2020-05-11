@@ -11,17 +11,23 @@
 </template>
 
 <script>
-import { setAuthInHeader } from '../api'
+import { mapGetters, mapMutations } from 'vuex'
+// import { setAuthInHeader } from '../api'
 export default {
    computed: {
-      isAuth() {
-         return !!localStorage.getItem('token')
-      }
+      ...mapGetters([
+         'isAuth'
+      ]),
+      // isAuth() {
+      //    return !!localStorage.getItem('token')
+      // }
    },
    methods : {
+      ...mapMutations([
+         'LOGOUT'
+      ]),
       logout() {
-         delete localStorage.token
-         setAuthInHeader(null)
+         this.LOGOUT()
          this.$router.push('/login')
       }
    }
