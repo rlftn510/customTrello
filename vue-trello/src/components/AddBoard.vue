@@ -50,13 +50,13 @@ export default {
       ]),
       ...mapActions([
          'ADD_BOARD',
-         'FATCH_BOARDS'
+         'FETCH_BOARDS'
       ]),
       addBoard() {
          this.SET_IS_ADD_BOARD(false)
-         // this.$emit('submit')
-         this.ADD_BOARD({title : this.input}).then(() => {
-            this.FATCH_BOARDS()
+         this.ADD_BOARD({title : this.input}).then(({id}) => {
+            this.$router.push(`/b/${id}`)
+            // this.FATCH_BOARDS()
          })
       }
    }

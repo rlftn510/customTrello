@@ -52,11 +52,11 @@ export default {
         'SET_IS_ADD_BOARD'
       ]),
       ...mapActions([
-         'FATCH_BOARDS'
+         'FETCH_BOARDS'
       ]),
       fetchData() {
          this.loading = true;
-         this.FATCH_BOARDS().finally(() => {
+         this.FETCH_BOARDS().finally(() => {
             this.loading = false
          })
       },
