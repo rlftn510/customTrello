@@ -1,26 +1,34 @@
 <template>
   <div>
-      Board
-      <div v-if="loading">Loading Board...</div>
-      <div v-else>
-        <div>bid : {{bid}}</div>
-        <pre>{{board}}</pre>
-        <router-link :to="`/b/${bid}/c/1`">card1</router-link>
-        <router-link :to="`/b/${bid}/c/2`">card2</router-link>
+      <div class="board-wrapper">
+         <div class="board">
+            <div class="board-header">
+               <span class="board-title">{{board.title}}</span>
+            </div>
+            <div class="list-section-wrapper">
+               <div class="list-section">
+                  <div class="list-wrapper" v-for="list in board.lists" :key="list.pos">
+                     <List :data="list"></List>
+                  </div>
+               </div>
+            </div>
+         </div>
       </div>
-      <hr>
-      <router-view></router-view>
   </div>
 </template>
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import List from './List'
 export default {
     data() {
         return {
             bid : 0,
             loading : false
         }
+    },
+    components: {
+       List
     },
     computed: {
        ...mapState({
@@ -95,6 +103,7 @@ export default {
   position: absolute;
   right: 15px;
 }
+
 .list-section-wrapper {
   flex-grow: 1;
   position: relative;
@@ -117,6 +126,7 @@ export default {
   vertical-align: top;
   margin-right: 5px;
 }
+
 .card-item.gu-transit {
   background-color: #555 !important;
 }
@@ -125,4 +135,14 @@ export default {
   background-color: #fff !important;
   transform: rotate(3deg) !important;
 }
+/* .list-wrapper.gu-transit .list {
+  background-color: #555 !important;
+  color: #555 !important;
+  opacity: 1 !important;
+}
+.list-wrapper.gu-mirror .list {
+  opacity: 1 !important;
+  background-color: #fff !important;
+  transform: rotate(3deg) !important;
+} */
 </style>
