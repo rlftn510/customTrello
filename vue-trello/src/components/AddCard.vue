@@ -1,15 +1,19 @@
 <template>
   <div class="add-card">
-    <form @submit.prevent="onSubmit">
+    <form @submit.prevent="">
       <input class="form-control" v-model="inputTitle" type="text" ref="inputText">
-      <button class="btn btn-success" type="submit" :disabled="invalidInput">Add Card</button>
+      <button class="btn btn-success" type="submit" :disabled="invalidInput" @click="onSubmit()">Add Card</button>
       <a class="cancel-add-btn" href="" @click.prevent.stop="$emit('close')">&times;</a>
     </form>
   </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
+
 export default {
+   props: ['listId'],
    data() {
       return {
          inputTitle: ''
@@ -21,8 +25,19 @@ export default {
       }
    },
    methods: {
+      ...mapActions([
+         'ADD_CARD'
+      ]),
       onSubmit() {
-         conosle.log('subbit')
+         if(!this.inputTitle) return
+         console.log('223')
+         const {inputTitle, listId} = this
+         this.ADD_CARD({
+            title: inputTitle,
+            listId
+         }).finally(() => {
+            this.inputTitle = ''
+         })
       },
       setupClickOutside(el) {
          document.querySelector('body').addEventListener('click', (e) => {
@@ -30,7 +45,8 @@ export default {
             this.$emit('close')
             
          })
-      }
+      },
+      
    },
    mounted() {
       this.$refs.inputText.focus()
