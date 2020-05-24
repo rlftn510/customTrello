@@ -17,6 +17,10 @@ const actions = {
          commit('SET_BOARD', data.item)
       })
    },
+   DELETE_BOARD (_, {id}) {
+      console.warn(id)
+      return api.board.destory(id)
+   },
    ADD_CARD ({dispatch, state}, {title, listId, pos}) {
       return api.card.create(title, listId, pos).then(() => {
          dispatch('FETCH_BOARD', {id: state.board.id})
@@ -37,7 +41,7 @@ const actions = {
       return api.card.destory(id).then(() => {
          dispatch('FETCH_BOARD', {id: state.board.id})
       })
-   }
+   },
 }
 
 export default actions
