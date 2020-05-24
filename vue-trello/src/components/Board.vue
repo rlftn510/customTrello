@@ -3,7 +3,12 @@
       <div class="board-wrapper">
          <div class="board">
             <div class="board-header">
-               <span class="board-title">{{board.title}}</span>
+               <input class="form-control" type="text" 
+               v-if="isEditTitle" v-model="inputTitle" ref="inputTitle"
+               @blur="onSubmitTitle"
+               @keyup.enter="onSubmitTitle"
+               >
+               <span class="board-title" v-else @click="onClickTitle">{{board.title}}</span>
                <a href="" class="board-header-btn show-menu" @click.prevent="onShowSettings">
                   ...Show Menu
                </a>
@@ -34,6 +39,8 @@ export default {
             bid : 0,
             loading : false,
             cDragger : null,
+            isEditTitle: false,
+            inputTitle: ''
         }
     },
     components: {
@@ -49,6 +56,7 @@ export default {
     },
     created() {
         this.fetchData().then(_ => {
+           this.inputTitle = this.board.title
            this.SET_THEME(this.board.bgColor)
         })
         this.SET_IS_SHOW_BOARD_SETTINGS(false)
@@ -63,7 +71,8 @@ export default {
     methods: {
          ...mapActions([
             'FETCH_BOARD',
-            'UPDATE_CARD'
+            'UPDATE_CARD',
+            'UPDATE_BOARD'
          ]),
          ...mapMutations([
             'SET_THEME',
@@ -80,6 +89,10 @@ export default {
             //       this.bid = this.$route.params.bid
             //       this.loading = false
             // },500)
+         },
+         onClickTitle() {
+            this.isEditTitle = true
+            this.$nextTick(_ => this.$refs.inputTitle.focus())
          },
          setCardDraggabble() {
             if(this.cDragger) this.cDragger.destroy()
@@ -105,6 +118,15 @@ export default {
                console.log(targetCard)
                this.UPDATE_CARD(targetCard)
             })
+      },
+      onSubmitTitle() {
+         this.isEditTitle = false
+         this.inputTitle = this.inputTitle.trim()
+         if(!this.inputTitle) return 
+         const id = this.board.id
+         const title = this.inputTitle
+         if (title === this.board.title) return 
+         this.UPDATE_BOARD({id, title})
       },
       onShowSettings() {
          this.SET_IS_SHOW_BOARD_SETTINGS(true)
