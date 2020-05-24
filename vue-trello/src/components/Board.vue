@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapMutations } from 'vuex'
 import List from './List'
 import dragger from '../utils/dragger'
 
@@ -37,28 +37,33 @@ export default {
     },
     computed: {
        ...mapState({
-          board: 'board'
+          board: 'board',
+          bodyColor : 'bodyColor'
        })
     },
     created() {
-        this.fetchData()
+        this.fetchData().then(_ => {
+           this.SET_THEME(this.board.bgColor)
+        })
     },
     updated() {
        this.setCardDraggabble()
-       
-      //  if(this.dragulaCards) this.dragulaCards.destroy()
-
-       
-       
+    },
+    mounted() {
+      //  console.log(this.$el)
+      //  this.$el.style.backgroundColor = this.bodyColor
     },
     methods: {
          ...mapActions([
             'FETCH_BOARD',
             'UPDATE_CARD'
          ]),
+         ...mapMutations([
+            'SET_THEME'
+         ]),
          fetchData() {
             this.loading = true
-            this.FETCH_BOARD({ id : this.$route.params.bid })
+            return this.FETCH_BOARD({ id : this.$route.params.bid })
             .then(() => {
                this.loading = false
             })

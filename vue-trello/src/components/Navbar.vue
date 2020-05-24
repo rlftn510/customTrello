@@ -11,16 +11,26 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex'
+import { mapGetters, mapMutations, mapState } from 'vuex'
 // import { setAuthInHeader } from '../api'
 export default {
    computed: {
+      ...mapState([
+         'navColor',
+         'bodyColor'
+      ]),
       ...mapGetters([
          'isAuth'
       ]),
       // isAuth() {
       //    return !!localStorage.getItem('token')
       // }
+   },
+   watch: {
+      bodyColor(){
+         this.updatedTheme()
+      },
+      // 'bodyColor': 'updatedTheme'
    },
    methods : {
       ...mapMutations([
@@ -29,7 +39,19 @@ export default {
       logout() {
          this.LOGOUT()
          this.$router.push('/login')
+      },
+      updatedTheme() {
+         this.$el.style.backgroundColor = this.navColor
+         const body = document.querySelector('body')
+         const container = document.querySelector('.container')
+         if (body) body.style.backgroundColor = this.bodyColor
+         if (container) container.style.backgroundColor = this.bodyColor
+         
+
       }
+   },
+   mounted() {
+      this.updatedTheme()
    }
 }
 </script>
