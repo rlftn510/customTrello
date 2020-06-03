@@ -15,7 +15,9 @@
             </div>
             <div class="list-section-wrapper">
                <div class="list-section">
-                  <div class="list-wrapper" v-for="list in board.lists" :key="list.pos">
+                  <div class="list-wrapper" 
+                  :data-list-id="list.id"
+                  v-for="list in board.lists" :key="list.pos">
                      <List :data="list"></List>
                   </div>
                   <div class="list-wrapper">
@@ -43,6 +45,7 @@ export default {
             bid : 0,
             loading : false,
             cDragger : null,
+            lDragger : null,
             isEditTitle: false,
             inputTitle: ''
         }
@@ -68,6 +71,7 @@ export default {
     },
     updated() {
        this.setCardDraggabble()
+       this.setListDraggabble()
     },
     mounted() {
       //  console.log(this.$el)
@@ -77,7 +81,8 @@ export default {
          ...mapActions([
             'FETCH_BOARD',
             'UPDATE_CARD',
-            'UPDATE_BOARD'
+            'UPDATE_BOARD',
+            'UPDATE_LIST'
          ]),
          ...mapMutations([
             'SET_THEME',
@@ -105,7 +110,7 @@ export default {
 
             this.cDragger.on('drop', (el, wrapper, target, siblings) => {
                let targetCard = {
-                  id: el.dataset.cardId * 1,
+                  id: el.dataset.listId * 1,
                   pos: 65535
                }
 
@@ -123,6 +128,35 @@ export default {
                console.log(targetCard)
                this.UPDATE_CARD(targetCard)
             })
+      },
+      setListDraggabble() {
+         if(this.lDragger) this.lDragger.destroy()
+         
+         const options = {
+            invalid: (el, handle) => !/^list/.test(handle.className)
+         }
+         this.lDragger = dragger.init(Array.from(this.$el.querySelectorAll('.list-section')),options)
+
+         this.lDragger.on('drop', (el, wrapper, target, siblings) => {
+            let targetList = {
+               id: el.dataset.listId * 1,
+               pos: 65535
+            }
+
+            const {prev, next} = dragger.sibling({
+               el, 
+               wrapper, 
+               candidates: Array.from(wrapper.querySelectorAll('.list')),
+               type: 'list'
+            })
+
+            if(!prev && next) targetList.pos = next.pos / 2
+            else if (!next && prev) targetList.pos = prev.pos * 2
+            else if (prev && next) targetList.pos = (prev.pos + next.pos) / 2
+
+            console.log(targetList)
+            this.UPDATE_LIST(targetList)
+         })
       },
       onSubmitTitle() {
          this.isEditTitle = false
