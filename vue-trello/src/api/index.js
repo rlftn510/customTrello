@@ -47,7 +47,10 @@ export const list = {
    },
    update(id, payload) {
       return request('put', `/lists/${id}`, payload)
-   }
+   },
+   destroy(id) {
+      return request('delete',`/lists/${id}`)
+   },
 }
 
 export const card = {
